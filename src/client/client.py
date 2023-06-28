@@ -48,7 +48,9 @@ class AppClient:
 
         if "logs" in response.abi_results[0].tx_info:
             logs = [b64decode(log) for log in response.abi_results[0].tx_info["logs"]]
-            print([log.decode() for log in logs if not log.startswith(ABI_RETURN_HASH)])
+            print("Logs:", [log.decode() for log in logs if not log.startswith(ABI_RETURN_HASH)])
+        
+        print("Budget used:", response.simulate_response['txn-groups'][0]['app-budget-consumed'])
 
         if response.failure_message != "":
             raise Exception("Simulation failed: " + response.failure_message)

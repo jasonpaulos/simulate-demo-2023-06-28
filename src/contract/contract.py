@@ -11,7 +11,11 @@ def array_contains(
     array: abi.DynamicArray[abi.Uint16], target: abi.Uint16, *, output: abi.Bool
 ) -> Expr:
     """Returns true if the target element is in the array, otherwise returns false."""
-    return output.set(binary_search(array, target.get()) < array.length())
+    return (
+        If(array.length() == Int(0))
+        .Then(output.set(False))
+        .Else(output.set(binary_search(array, target.get()) < array.length()))
+    )
 
 
 @Subroutine(TealType.uint64)
@@ -29,28 +33,23 @@ def binary_search(array: abi.DynamicArray[abi.Uint16], target: Expr) -> Expr:
         While(low.load() <= high.load()).Do(
             print_int(Bytes("low"), low.load()),
             print_int(Bytes("high"), high.load()),
+
             mid.store((low.load() + high.load()) / Int(2)),
             print_int(Bytes("mid"), mid.load()),
+            
             array[mid.load()].store_into(guess),
+            print_int(Bytes("guess"), guess.get()),
+            
             If(guess.get() == target)
             .Then(Return(mid.load()))
             .ElseIf(guess.get() < target)
             .Then(low.store(mid.load() + Int(1)))
-            # Wrong
-            # .Else(high.store(mid.load() - Int(1))),
-            # Right
             .ElseIf(mid.load() == Int(0))
             .Then(Break())
             .Else(high.store(mid.load() - Int(1))),
         ),
         Return(array.length()),
     )
-
-
-@Subroutine(TealType.none)
-def print_number(num: Expr) -> Expr:
-    number_as_bytes = ScratchVar(TealType.bytes)
-    return Seq()
 
 
 approval_program, clear_state_program, contract = router.compile_program(

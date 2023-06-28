@@ -18,19 +18,16 @@ def test_client():
 
     app = AppClient(algod, addr, AccountTransactionSigner(sk))
 
-    assert app.array_contains([1, 2, 3, 4, 5], 3) == True
+    assert app.array_contains([1, 2, 3, 4, 5], 4) == True
     assert app.array_contains([1, 2, 3, 4, 5], 100) == False
 
-    random_list = random_sorted_list(900)
+    random_list = random_sorted_list(min_value=1, max_value=2**16, length=998)
     print("random list:", random_list)
-    not_in_list = 0
-    while not_in_list in random_list:
-        not_in_list += 1
 
-    assert app.array_contains(random_list, not_in_list, extra_budget=3000) == False
+    assert app.array_contains(random_list, 0, extra_budget=3000, more_logs=True) == False
 
 
-def random_sorted_list(length: int) -> list[int]:
+def random_sorted_list(min_value: int, max_value: int, length: int) -> list[int]:
     import random
 
-    return sorted(random.sample(range(0, 2**16), length))
+    return sorted(random.sample(range(min_value, max_value), length))
