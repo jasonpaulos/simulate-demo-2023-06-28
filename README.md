@@ -4,7 +4,7 @@ This repo contains a demo of two new simulation features from [Algorand 3.16](ht
 1. Increased app opcode budget
 2. Higher app log limits
 
-This demo is for the [Proof of State show on 2023.06.28](https://www.youtube.com/watch?v=ZtEcXs3i4N8).
+This demo is for the [Proof of State show on 2023.06.28](https://www.youtube.com/watch?v=o9tIRoELut8).
 
 ## Development Setup
 
